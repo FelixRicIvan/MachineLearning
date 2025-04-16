@@ -1,0 +1,35 @@
+from sklearn import tree
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+
+iris = load_iris()
+iris_data = iris.data
+iris_label = iris.target
+
+train_data, test_data, train_label, test_label = train_test_split(iris_data, iris_label, test_size = 0.3)
+
+clf = tree.DecisionTreeClassifier()
+iris_clf = clf.fit(train_data, train_label)
+
+print("訓練資料正確率:",clf.score(train_data,train_label)) 
+print("測試資料正確率:",clf.score(test_data, test_label)) 
+
+predict=clf.predict(test_data)
+print("標準答案:",test_label)
+print("預測答案:",predict)
+
+
+import graphviz 
+dot_data = tree.export_graphviz(clf, out_file=None) 
+graph = graphviz.Source(dot_data) 
+graph.render("iris") 
+
+import pydotplus  
+from IPython.display import Image  
+dot_data = tree.export_graphviz(clf, out_file=None, 
+                feature_names=iris.feature_names,
+                class_names=iris.target_names,  
+                filled=True, rounded=True,  
+                special_characters=True)  
+graph = pydotplus.graph_from_dot_data(dot_data)  
+Image(graph.create_png())
